@@ -15,7 +15,7 @@ type Props = {
   cvc: string;
 };
 
-export default function index() {
+const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [deliveryInfo, setDeliveryInfo] = useState<Props>({
     firstName: "",
@@ -132,4 +132,6 @@ export default function index() {
       </div>
     </main>
   );
-}
+};
+
+export default Index;

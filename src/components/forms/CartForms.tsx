@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { CiLock } from "react-icons/ci";
 import * as Yup from "yup";
+import CardPay from "../CardPay";
 
 interface CartFormsValue {
   firstName: string;
@@ -17,7 +18,7 @@ interface CartFormsValue {
 }
 
 export default function CartForms() {
-  // Defining validation schema using Yup
+  const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, "First name must be minimum 2")
@@ -37,8 +38,16 @@ export default function CartForms() {
     cvc: Yup.string().required("CVC is required"),
   });
 
-  const handleSubmit = (values: CartFormsValue) => {
-    alert(JSON.stringify(values, null, 2));
+  const handleSubmit = async (values: CartFormsValue) => {
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setLoading(false);
+    const queryParams = new URLSearchParams();
+    Object.entries(values).forEach(([key, value]) => {
+      queryParams.append(key, value);
+    });
+    const queryString = queryParams.toString();
+    window.location.href = `/preview?${queryString}`;
   };
 
   const formik = useFormik({
@@ -59,10 +68,13 @@ export default function CartForms() {
   });
 
   return (
-    <main className="flex-1 ">
-      <form onSubmit={formik.handleSubmit} className="px-4 flex flex-col gap-4">
+    <main className="flex-1">
+      <form
+        onSubmit={formik.handleSubmit}
+        className=" px-1 md:px-4 flex flex-col gap-4"
+      >
         {/* DELIVERY INFO  */}
-        <div className="bg-white rounded-lg px-4 shadow-lg ">
+        <div className="bg-white border rounded-lg px-2 md:px-4 shadow-lg ">
           <div className="pt-3 ">
             <h1 className=" text-3xl font-bold">Delivery Info</h1>
             <hr className=" my-3" />
@@ -79,7 +91,7 @@ export default function CartForms() {
                 value={formik.values.firstName}
                 onChange={formik.handleChange}
                 placeholder="Robert"
-                className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                className="border border-[#D8D9DD] bg-white text-black  px-4 py-3 rounded-md w-full "
               />
               {formik.touched.firstName && formik.errors.firstName && (
                 <div className="error text-red-600">
@@ -98,7 +110,7 @@ export default function CartForms() {
                 value={formik.values.lastName}
                 onChange={formik.handleChange}
                 placeholder="Damas"
-                className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                className="border border-[#D8D9DD] bg-white text-black  px-4 py-3 rounded-md w-full "
               />
               {formik.touched.lastName && formik.errors.lastName && (
                 <div className="error text-red-600">
@@ -119,7 +131,7 @@ export default function CartForms() {
               value={formik.values.address}
               onChange={formik.handleChange}
               placeholder="8729 Bay Ave Brooklyn"
-              className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+              className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
             />
             {formik.touched.address && formik.errors.address && (
               <div className="error text-red-600">{formik.errors.address}</div>
@@ -138,7 +150,7 @@ export default function CartForms() {
                 value={formik.values.city}
                 onChange={formik.handleChange}
                 placeholder="New York"
-                className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
               />
               {formik.touched.city && formik.errors.city && (
                 <div className="error text-red-600">{formik.errors.city}</div>
@@ -155,7 +167,7 @@ export default function CartForms() {
                 value={formik.values.state}
                 onChange={formik.handleChange}
                 placeholder="Hudson"
-                className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
               />
               {/* {formik.touched.lastName && formik.errors.lastName && (
               <div className="error">{formik.errors.lastName}</div>
@@ -175,7 +187,7 @@ export default function CartForms() {
                 value={formik.values.zip}
                 onChange={formik.handleChange}
                 placeholder="NY 11218"
-                className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
               />
               {formik.touched.zip && formik.errors.zip && (
                 <div className="error text-red-600">{formik.errors.zip}</div>
@@ -192,7 +204,7 @@ export default function CartForms() {
                 value={formik.values.phone}
                 onChange={formik.handleChange}
                 placeholder="+1 262-872-0778"
-                className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
               />
               {formik.touched.phone && formik.errors.phone && (
                 <div className="error text-red-600">{formik.errors.phone}</div>
@@ -202,9 +214,14 @@ export default function CartForms() {
         </div>
 
         {/* PAYMENT MODE (CREDIT CARD | PAYPAL) */}
-        <div className="bg-white rounded-lg px-4 shadow-lg ">
+        <div className="bg-white border rounded-lg px-4 shadow-lg ">
           <div className="pt-3 ">
-            <h1 className=" text-3xl font-bold">Payment</h1>
+            <div className="flex flex-row justify-between">
+              <h1 className=" text-3xl font-bold">Payment</h1>
+              <div>
+                <CardPay />
+              </div>
+            </div>
             <hr className=" my-3" />
           </div>
           <div>
@@ -219,7 +236,7 @@ export default function CartForms() {
                 value={formik.values.cardNumber}
                 onChange={formik.handleChange}
                 placeholder="4114 555 999 9999 222 "
-                className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
               />
               {formik.touched.cardNumber && formik.errors.cardNumber && (
                 <div className="error text-red-600">
@@ -240,7 +257,7 @@ export default function CartForms() {
                   value={formik.values.expiry}
                   onChange={formik.handleChange}
                   placeholder="20 / 30"
-                  className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                  className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
                 />
                 {formik.touched.expiry && formik.errors.expiry && (
                   <div className="error text-red-600">
@@ -259,7 +276,7 @@ export default function CartForms() {
                   value={formik.values.cvc}
                   onChange={formik.handleChange}
                   placeholder="888"
-                  className="border border-[#D8D9DD]  px-4 py-3 rounded-md w-full "
+                  className="border border-[#D8D9DD] bg-white text-black px-4 py-3 rounded-md w-full "
                 />
                 {formik.touched.cvc && formik.errors.cvc && (
                   <div className="error text-red-600">{formik.errors.cvc}</div>
@@ -273,7 +290,7 @@ export default function CartForms() {
             className=" bg-[#0469FF] w-full flex items-center justify-center gap-2 px-4 py-4  my-3 rounded-md text-white"
           >
             <CiLock />
-            Pay Now $895
+            <span>{loading ? "loading" : "Pay Now $895"}</span>
           </button>
         </div>
       </form>

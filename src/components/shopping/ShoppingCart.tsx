@@ -5,7 +5,7 @@ import { SHOPPINCARTDATA } from "@/DammyData/dammy_data";
 export default function ShoppingCart() {
   // const handlerDelete = (id: number) => {};
   return (
-    <div className=" flex-1 bg-white rounded-lg shadow-lg">
+    <div className=" flex-1 bg-white border rounded-lg shadow-lg">
       <div className=" p-3">
         <h1 className=" text-3xl font-bold">Shopping Cart</h1>
         <hr className=" mt-3" />
